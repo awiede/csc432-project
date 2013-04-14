@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 pop0=500
 t = np.arange(10)
-deltaPop = 4
+deltaPop = 0.25
 p = 1
 
 def growthFunc(pop0, deltaPop):
@@ -18,8 +18,8 @@ v = 10
 def deathFunc(pop0,p,q,w,t,v,pc=0.5):
 	return pop0-effort(p,q,w,t,v,pc)
 
-def profit(p,q,w,t,v):
-	return (p*q)-((w*t)-v)
+def profit(p,q,w,t,v,pc=0.5):
+	return (p*q*pc)-((w*t)-v)
 
 def effort(p,q,w,t,v,probCatch=0.5):
 	return (profit(p,q,w,t,v)*probCatch)
@@ -33,12 +33,12 @@ def dpop_dt(pop0, t, deltaPop, p, q, w, v, pc=0.5):
 
 #pop0 is a np.array
 #t is an empty np.array or arange
-fish_pop = integrate.odeint(dpop_dt,pop0, t, args=(deltaPop,p,q,w,t,v))
+fish_pop0 = integrate.odeint(dpop_dt, pop0, t, args=(deltaPop,p,q,w,t,v))
 
-print fish_pop
-
-pd.DataFrame(np.column_stack((t, fish_pop)),columns=["Days","Fish Pop"])
+print pd.DataFrame(np.column_stack((t, fish_pop0, profit(p,q,w,t,v))),columns=["Days","Fish Pop","Profit"])
 
 fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (Days)", ylabel="Fish Population"), figsize=(8,5))
-ax.plot(t, fish_pop, "k", label="Bass", lw=2)
+ax.plot(t, fish_pop0, "k", label="Bass", lw=2)
+ax.plot(t, profit(p,q,w,t,v), "b", label="Profit", lw=2)
+ax.legend()
 plt.show()
