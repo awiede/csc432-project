@@ -48,7 +48,9 @@ def MC(q):
 #E(t)=.1*t
 #E'(t) = .1
 def effortFunc(t):
-	return .1
+	#why does the random raise an error?
+	prob_catch = np.random.random()
+	return (unitProfit(t)*prob_catch)
 
 def dP_dt(P,t,r,M):
 	return (birthFunc(P,r)-deathFunc(P,t,r,M)-(effortFunc(t)*P))
