@@ -37,8 +37,8 @@ fish_pop0 = integrate.odeint(dpop_dt, pop0, t, args=(deltaPop,p,q,w,t,v))
 
 print pd.DataFrame(np.column_stack((t, fish_pop0, profit(p,q,w,t,v))),columns=["Days","Fish Pop","Profit"])
 
-fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (Days)", ylabel="Fish Population"), figsize=(8,5))
-ax.plot(t, fish_pop0, "k", label="Bass", lw=2)
+fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (Years)", ylabel="Fish Population/Profit in Dollars"), figsize=(8,5))
+ax.plot(t, fish_pop0, "k", label="Fish", lw=2)
 ax.plot(t, profit(p,q,w,t,v), "b", label="Profit", lw=2)
 ax.legend()
 plt.show()
