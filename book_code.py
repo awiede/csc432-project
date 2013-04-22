@@ -57,19 +57,19 @@ def dP_dt(P,t,r,M):
 	return (birthFunc(P,r)-deathFunc(P,t,r,M)-(effortFunc(t)*P))
 
 
-pop0 = 100
-birth_frac = 5.
+pop0 = 1000
+birth_frac = 10.
 #death_frac = .2
-carry_capac = 500
+carry_capac = 2000
 
-time_points = np.arange(1,11,1.)
+time_points = np.arange(1,13,1.)
 
 pops = integrate.odeint(dP_dt, pop0, time_points, args=(birth_frac, carry_capac))
 
-fish_data=pd.DataFrame(np.column_stack((time_points,pops)),columns=["time", "Fish"])
+fish_data=pd.DataFrame(np.column_stack((time_points,pops)),columns=["Time (months)", "Fish"])
 print fish_data
 
-fig, ax = plt.subplots(subplot_kw=dict(xlabel="time",ylabel="fish population"))
+fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Population"))
 ax.plot(time_points,pops, "k", lw=2)
 fig.suptitle("Fish Population")
 plt.show()
