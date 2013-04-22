@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy import integrate 
+from scipy import integrate
+import random
 
 #population = P
 #instantaneous growth rate = r
@@ -49,7 +50,7 @@ def MC(q):
 #E'(t) = .1
 def effortFunc(t):
 	#why does the random raise an error?
-	prob_catch = np.random.random()
+	prob_catch = random.random()
 	return (unitProfit(t)*prob_catch)
 
 def dP_dt(P,t,r,M):
@@ -61,7 +62,7 @@ birth_frac = 5.
 #death_frac = .2
 carry_capac = 500
 
-time_points = np.arange(0,10,1.)
+time_points = np.arange(1,11,1.)
 
 pops = integrate.odeint(dP_dt, pop0, time_points, args=(birth_frac, carry_capac))
 
