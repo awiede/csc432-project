@@ -18,15 +18,44 @@ from scipy import integrate
 def birthFunc(P, r):
 	return (r * P)
 
-def deathFunc(P, r, M):
+def deathFunc(P, t, r, M):
 	return ((r*(P/M))*P)
 
+def priceFunc(q):
+	if ((10-.5*q)>1):
+		return (10-.5*q)
+	else:
+		return 1
+
+def costFunc(q):
+	return (100+10*q)
+
+def revFunc(q):
+	return (priceFunc(q)*q)
+
+def profitFunc(q):
+	return (revFunc(q)-costFunc(q))	
+
+def unitProfit(q):
+	return (profitFunc(q)/q)
+
+def MR(q):
+	return (10-q)
+
+def MC(q):
+	return 10
+
+#E(t)=.1*t
+#E'(t) = .1
+def effortFunc(t):
+	return .1
+
 def dP_dt(P,t,r,M):
-	return (birthFunc(P,r)-deathFunc(P,r,M))
+	return (birthFunc(P,r)-deathFunc(P,t,r,M)-(effortFunc(t)*P))
 
 
 pop0 = 100
-birth_frac = 2.
+birth_frac = 5.
 #death_frac = .2
 carry_capac = 500
 
