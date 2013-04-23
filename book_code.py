@@ -49,11 +49,16 @@ def MC(q):
 #E(t)=.1*t
 #E'(t) = .1
 def effortFunc(t):
-	#why does the random raise an error?
+	#why does the np.random raise an error?
+	#replaced with python random, slower I think.
 	prob_catch = random.random()
-	return (unitProfit(t)*prob_catch)
+	return (prob_catch*t)
 
 def dP_dt(P,t,r,M):
+	print "t ",t
+	print
+	print "(effortFunc(t)*P) ",(effortFunc(t)*P)
+	print 
 	return (birthFunc(P,r)-deathFunc(P,t,r,M)-(effortFunc(t)*P))
 
 
@@ -71,5 +76,6 @@ print fish_data
 
 fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Population"))
 ax.plot(time_points,pops, "k", lw=2)
+plt.xlim(1,)
 fig.suptitle("Fish Population")
 plt.show()
