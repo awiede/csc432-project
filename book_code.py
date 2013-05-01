@@ -23,10 +23,10 @@ def deathFunc(P, t, r, M):
     return ((r*(P/M))*P)
 
 def priceFunc(quan):
-    if ((40-.05*quan)>1):
+    if ((40-.05*quan)>0):
         return (40-.05*quan)
     else:
-        return 1
+        return 0
 
 def costFunc(quan,var,fixed): #q, 10, 100
     return (fixed+var*quan)
@@ -96,10 +96,8 @@ def simulationTime(P,t,r,M): #effort with respect to time
             data[i]=dP_dt(data[i-1],t,r,M,i)+data[i-1]
     return data
 
-'''
-sim_time=simulationTime(pop0, time_points, birth_frac, carry_capac)
 
-#pops = integrate.odeint(dP_dt, pop0, time_points, args=(birth_frac, carry_capac))
+sim_time=simulationTime(pop0, time_points, birth_frac, carry_capac)
 
 fish_data=pd.DataFrame(np.column_stack((time_points,sim_time)),columns=["Time (months)", "Fish"])
 print fish_data
@@ -107,9 +105,9 @@ print fish_data
 fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Population"))
 ax.plot(time_points,sim_time, "k", lw=2)
 plt.xlim(1,)
-fig.suptitle("Fish Population")
+fig.suptitle("Fish Population (time based)")
 plt.show()
-'''
+
 def simulationProfit(P,t,r,M):
     data=np.zeros_like(t)
     fish_caught=np.zeros_like(t)
@@ -146,12 +144,12 @@ print demand_data
 fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Population"))
 ax.plot(time_points,sim_pi, "k", lw=2)
 plt.xlim(1,)
-fig.suptitle("Fish Population")
+fig.suptitle("Supply (Profit Based)")
 plt.show()
 
 
 fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Demanded"))
 ax.plot(time_points,dem, "b", lw=2)
 plt.xlim(1,)
-fig.suptitle("Fish Population")
+fig.suptitle("Demand")
 plt.show()
