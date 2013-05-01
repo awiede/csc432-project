@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import integrate
-import random
 
 """
 population = P
@@ -24,8 +23,8 @@ def deathFunc(P, t, r, M):
     return ((r*(P/M))*P)
 
 def priceFunc(quan):
-    if ((20-.05*quan)>1):
-        return (20-.05*quan)
+    if ((40-.05*quan)>1):
+        return (40-.05*quan)
     else:
         return 1
 
@@ -38,8 +37,8 @@ def revFunc(quan):
 def profitFunc(quan, var, fixed):
     return (revFunc(quan)-costFunc(quan,var,fixed)) 
 
-def unitProfit(quan):
-    return (profitFunc(quan)/quan)
+def unitProfit(quan, var, fixed):
+    return (profitFunc(quan, var, fixed)/(quan+1))
 
 def MR(quan):
     return (20-quan)
@@ -59,7 +58,7 @@ def effortFunc(t):
 
 def effortProfit(quan, var, fixed):
     prob_catch = np.random.random()
-    return (profitFunc(quan,var,fixed)*prob_catch)
+    return (prob_catch/(unitProfit(quan,var,fixed)+1))
 
 def fishCaught(P,t,iteration):
     """
@@ -67,7 +66,7 @@ def fishCaught(P,t,iteration):
     """
     return (effortFunc(t[iteration])*P)
 
-def fishCaughPi(P,quan,var,fixed): 
+def fishCaughtPi(P,quan,var,fixed): 
     """
     fish caught with respect to profit
     """
@@ -77,15 +76,16 @@ def dP_dt(P,t,r,M,iteration):
     return (birthFunc(P,r)-deathFunc(P,t,r,M)-fishCaught(P,t,iteration))
 
 def dP_dpi(P,t,r,M,iteration,quan,var,fixed):
-    return (birthFunc(P,r)-deathFunc(P,t,r,M)-fishCaught(P,t,iteration))
+    return (birthFunc(P,r)-deathFunc(P,t,r,M)-fishCaughtPi(P,quan,var,fixed))
 
 pop0 = 1000
 birth_frac = 0.25
 #death_frac = .2
 carry_capac = 2000
+variable_cost=10
+fixed_cost=100
 
 time_points = np.arange(1,49,1.)
-print time_points
 
 def simulationTime(P,t,r,M): #effort with respect to time
     data=np.zeros_like(t)
@@ -96,7 +96,9 @@ def simulationTime(P,t,r,M): #effort with respect to time
             data[i]=dP_dt(data[i-1],t,r,M,i)+data[i-1]
     return data
 
+'''
 sim_time=simulationTime(pop0, time_points, birth_frac, carry_capac)
+
 #pops = integrate.odeint(dP_dt, pop0, time_points, args=(birth_frac, carry_capac))
 
 fish_data=pd.DataFrame(np.column_stack((time_points,sim_time)),columns=["Time (months)", "Fish"])
@@ -104,14 +106,39 @@ print fish_data
 
 fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Population"))
 ax.plot(time_points,sim_time, "k", lw=2)
-#ax.plot(time_points,)
 plt.xlim(1,)
 fig.suptitle("Fish Population")
 plt.show()
-
+'''
 def simulationProfit(P,t,r,M):
     data=np.zeros_like(t)
+    fish_caught=np.zeros_like(t)
     for i in range(len(t)):
-        data[i]=func 
+        if i==0:
+            data[i]=dP_dpi(P,t,r,M,i,fish_caught[i],variable_cost,fixed_cost) + P
+            fish_caught[i]=fishCaughtPi(P,0,variable_cost,fixed_cost)
+        else:
+            data[i]=dP_dpi(data[i-1],t,r,M,i,fishCaughtPi(P,fish_caught[i-1],variable_cost,fixed_cost),variable_cost,fixed_cost) + data[i-1]
+            fish_caught[i]=fishCaughtPi(P,fish_caught[i-1],variable_cost,fixed_cost)
     return data
+'''
+def demand(P,t,,r,M,quan,var,fixed):
+    data=simulationProfit(P,t,r,M)
+    demand=np.zeros_like(t)
+    for i in range(len(t)):
+        fishCaughtPi(data[i],quan,var,fixed)
+'''
 
+sim_pi=simulationProfit(pop0, time_points,birth_frac,carry_capac)
+
+fish_pi_data=pd.DataFrame(np.column_stack((time_points,sim_pi)),columns=["Time (months)", "Fish"])
+print fish_pi_data
+
+
+fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Population"))
+p1=ax.plot(time_points,sim_pi, "k", lw=2)
+#p2=ax.plot(time_points,)
+plt.xlim(1,)
+fig.legend(p1,"S")
+fig.suptitle("Fish Population")
+plt.show()
