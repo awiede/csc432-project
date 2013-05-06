@@ -58,7 +58,7 @@ def effortFunc(t):
 
 def effortProfit(quan, var, fixed):
     prob_catch = np.random.random()
-    return (prob_catch/(unitProfit(quan,var,fixed)+1))
+    return (prob_catch/(unitProfit(quan,var,fixed)))
 
 def fishCaught(P,t,iteration):
     """
@@ -101,13 +101,13 @@ sim_time=simulationTime(pop0, time_points, birth_frac, carry_capac)
 
 fish_data=pd.DataFrame(np.column_stack((time_points,sim_time)),columns=["Time (months)", "Fish"])
 #print fish_data
-'''
+
 fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Population"))
 ax.plot(time_points,sim_time, "k", lw=2)
 plt.xlim(1,)
 fig.suptitle("Fish Population (time based)")
 plt.show()
-'''
+
 def simulationProfit(P,t,r,M):
     data=np.zeros_like(t)
     fish_caught=np.zeros_like(t)
@@ -167,7 +167,7 @@ print fish_pi_data
 #demand_data=pd.DataFrame(np.column_stack((time_points,dem)),columns=["Time (months)", "Demand"])
 #print demand_data
 
-'''
+
 fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Population"))
 ax.plot(time_points,sim_pi, "k", lw=2)
 plt.xlim(1,)
@@ -180,4 +180,3 @@ ax.plot(time_points,dem, "b", lw=2)
 plt.xlim(1,)
 fig.suptitle("Demand")
 plt.show()
-'''
