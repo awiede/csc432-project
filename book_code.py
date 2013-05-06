@@ -23,10 +23,10 @@ def deathFunc(P, t, r, M):
     return ((r*(P/M))*P)
 
 def priceFunc(quan):
-    if ((40-.05*quan)>0):
+    if ((40-.05*quan)>1):
         return (40-.05*quan)
     else:
-        return 0
+        return 1
 
 def costFunc(quan,var,fixed): #q, 10, 100
     return (fixed+var*quan)
@@ -100,14 +100,14 @@ def simulationTime(P,t,r,M): #effort with respect to time
 sim_time=simulationTime(pop0, time_points, birth_frac, carry_capac)
 
 fish_data=pd.DataFrame(np.column_stack((time_points,sim_time)),columns=["Time (months)", "Fish"])
-print fish_data
-
+#print fish_data
+'''
 fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Population"))
 ax.plot(time_points,sim_time, "k", lw=2)
 plt.xlim(1,)
 fig.suptitle("Fish Population (time based)")
 plt.show()
-
+'''
 def simulationProfit(P,t,r,M):
     data=np.zeros_like(t)
     fish_caught=np.zeros_like(t)
@@ -130,17 +130,44 @@ def demand(P,t,r,M):
             demand[i]=fishCaughtPi(data[i],demand[i-1],variable_cost,fixed_cost)
     return demand
 
+def priceInSim(P,t,r,M):
+    prices=np.zeros_like(t)
+    fish_caught=demand(P,t,r,M)
+    for i in range(len(t)):
+        if i==0:
+            prices[i]=40
+        else:
+            prices[i]=priceFunc(fish_caught[i])
+    return prices
 
 sim_pi=simulationProfit(pop0, time_points,birth_frac,carry_capac)
-
 dem=demand(pop0,time_points,birth_frac,carry_capac)
+p_in_sim=priceInSim(pop0,time_points,birth_frac,carry_capac)
 
-fish_pi_data=pd.DataFrame(np.column_stack((time_points,sim_pi)),columns=["Time (months)", "Fish"])
+def average_price(prices):
+    avg=0.0
+    for e in prices:
+        avg+=e
+    return avg/len(prices)
+
+def average_pop(pop):
+    avg=0.0
+    for e in pop:
+        avg+=e 
+    return avg/len(pop)
+
+print "Average Price"
+print average_price(p_in_sim)
+print "Average Population"
+print average_pop(sim_pi)
+
+fish_pi_data=pd.DataFrame(np.column_stack((time_points,sim_pi,dem,p_in_sim)),columns=["Time (months)", "Fish","Demand","Price"])
 print fish_pi_data
-demand_data=pd.DataFrame(np.column_stack((time_points,dem)),columns=["Time (months)", "Demand"])
-print demand_data
+#fish_pi_data.save("/Users/Andreas/Desktop/test.txt")
+#demand_data=pd.DataFrame(np.column_stack((time_points,dem)),columns=["Time (months)", "Demand"])
+#print demand_data
 
-
+'''
 fig, ax = plt.subplots(subplot_kw=dict(xlabel="Time (months)",ylabel="Fish Population"))
 ax.plot(time_points,sim_pi, "k", lw=2)
 plt.xlim(1,)
@@ -153,3 +180,4 @@ ax.plot(time_points,dem, "b", lw=2)
 plt.xlim(1,)
 fig.suptitle("Demand")
 plt.show()
+'''
